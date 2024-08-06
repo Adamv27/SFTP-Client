@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sftp_client/pages/hosts/models/host.dart';
+import 'package:sftp_client/pages/hosts/widgets/add_host_menu.dart';
 import 'widgets/host_card.dart';
 import 'providers/hosts_provider.dart';
 
@@ -10,7 +11,6 @@ class HostsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hostsState = ref.watch(hostsListProvider);
-    print(hostsState);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +26,7 @@ class HostsPage extends ConsumerWidget {
         const SizedBox(height: 8),
         hostsState.when(
           data: (hosts) => _hostsList(hosts),
-          loading: () => Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) {
             print(error);
             return Container();
@@ -34,7 +34,7 @@ class HostsPage extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         const Spacer(),
-        _addHostButton(ref),
+        _addHostButton(context, ref),
       ],
     );
   }
@@ -43,18 +43,25 @@ class HostsPage extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         children: hosts.map((host) {
-          return HostCard(host: host);
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: HostCard(host: host),
+          );
         }).toList(),
       ),
     );
   }
 
-  Widget _addHostButton(WidgetRef ref) {
+  Widget _addHostButton(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () async {
-        final newHost =
-            Host(name: 'home', url: 'rde.adamvinch.com', username: 'adam');
-        await ref.read(hostsListProvider.notifier).addHost(newHost);
+        Host? newHost = await showDialog(
+          context: context,
+          builder: (context) => const AddHostMenu(),
+        );
+        if (newHost != null) {
+          await ref.read(hostsListProvider.notifier).addHost(newHost);
+        }
       },
       child: const Text('Add'),
     );

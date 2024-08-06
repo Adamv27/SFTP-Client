@@ -1,6 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
-import 'package:sftp_client/app_theme.dart';
+import 'package:sftp_client/theme/app_theme.dart';
 
 class WindowButtons extends StatefulWidget {
   const WindowButtons({super.key});

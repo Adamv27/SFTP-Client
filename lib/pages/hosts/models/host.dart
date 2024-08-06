@@ -1,13 +1,13 @@
 class Host {
   const Host({
     required this.name,
-    required this.username,
     required this.url,
+    this.username,
     this.port = 22,
   });
 
   final String name;
-  final String username;
+  final String? username;
   final int port;
   final String url;
 

@@ -59,12 +59,14 @@ class HostCard extends ConsumerWidget {
   Row _buildHostInfo(ColorScheme colorScheme) {
     return Row(
       children: [
-        Text(
-          host.username,
-          style: TextStyle(color: colorScheme.onPrimaryContainer),
-        ),
-        const SizedBox(width: 4),
-        Text('@', style: TextStyle(color: colorScheme.onSecondaryContainer)),
+        if (host.username != null)
+          Text(
+            host.username!,
+            style: TextStyle(color: colorScheme.onPrimaryContainer),
+          ),
+        if (host.username != null) const SizedBox(width: 4),
+        if (host.username != null)
+          Text('@', style: TextStyle(color: colorScheme.onSecondaryContainer)),
         const SizedBox(width: 4),
         Text(
           host.url,
