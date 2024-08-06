@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sftp_client/pages/hosts/models/host.dart';
+import 'package:sftp_client/pages/hosts/providers/hosts_provider.dart';
 
-class HostCard extends StatelessWidget {
+class HostCard extends ConsumerWidget {
   const HostCard({
     super.key,
-    required this.name,
-    required this.url,
-    required this.username,
-    required this.port,
+    required this.host,
   });
 
-  final String name;
-  final String url;
-  final String username;
-  final int port;
+  final Host host;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -35,7 +32,7 @@ class HostCard extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              name[0].toUpperCase(),
+              host.name[0].toUpperCase(),
               style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
@@ -44,16 +41,17 @@ class HostCard extends StatelessWidget {
           ),
         ),
         onTap: () {
-          print('Connecting to $username@$url');
+          print('Connecting to ${host.username}@${host.url}');
         },
         title: Text(
-          name,
+          host.name,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: colorScheme.primary,
           ),
         ),
         subtitle: _buildHostInfo(colorScheme),
+        trailing: _buildDeleteButton(ref),
       ),
     );
   }
@@ -62,24 +60,33 @@ class HostCard extends StatelessWidget {
     return Row(
       children: [
         Text(
-          username,
+          host.username,
           style: TextStyle(color: colorScheme.onPrimaryContainer),
         ),
         const SizedBox(width: 4),
         Text('@', style: TextStyle(color: colorScheme.onSecondaryContainer)),
         const SizedBox(width: 4),
         Text(
-          url,
+          host.url,
           style: TextStyle(color: colorScheme.onPrimaryContainer),
         ),
         const SizedBox(width: 4),
         Text(':', style: TextStyle(color: colorScheme.onSecondaryContainer)),
         const SizedBox(width: 4),
         Text(
-          port.toString(),
+          host.port.toString(),
           style: TextStyle(color: colorScheme.onPrimaryContainer),
         ),
       ],
+    );
+  }
+
+  Widget _buildDeleteButton(WidgetRef ref) {
+    return IconButton(
+      onPressed: () async {
+        await ref.read(hostsListProvider.notifier).removeHost(host);
+      },
+      icon: const Icon(Icons.close),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sftp_client/nav/nav_menu.dart';
 import 'package:sftp_client/window_bar/window_bar.dart';
 
@@ -34,7 +35,9 @@ class _AppPageState extends State<AppPage> {
                   padding: const EdgeInsets.all(16),
                   color: Theme.of(context).colorScheme.primaryContainer,
                   width: double.infinity,
-                  child: currentPage ?? widget.pageContent,
+                  child: ProviderScope(
+                    child: currentPage ?? widget.pageContent,
+                  ),
                 ),
               ),
             ],

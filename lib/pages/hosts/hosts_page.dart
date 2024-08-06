@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:sftp_client/pages/hosts/widgets/host_card.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sftp_client/pages/hosts/models/host.dart';
+import 'widgets/host_card.dart';
+import 'providers/hosts_provider.dart';
 
-class HostsPage extends StatelessWidget {
+class HostsPage extends ConsumerWidget {
   const HostsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hostsState = ref.watch(hostsListProvider);
+    print(hostsState);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -13,44 +19,43 @@ class HostsPage extends StatelessWidget {
           'Hosts',
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimaryContainer,
-            fontSize: 24,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8),
-        _hostsList(context),
+        hostsState.when(
+          data: (hosts) => _hostsList(hosts),
+          loading: () => Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) {
+            print(error);
+            return Container();
+          },
+        ),
         const SizedBox(height: 8),
         const Spacer(),
-        _addHostButton(),
+        _addHostButton(ref),
       ],
     );
   }
 
-  Widget _hostsList(BuildContext context) {
+  Widget _hostsList(List<Host> hosts) {
     return SingleChildScrollView(
       child: Column(
-        children: [
-          HostCard(
-            name: 'Home',
-            url: const String.fromEnvironment("SERVER_URL"),
-            username: const String.fromEnvironment("SERVER_USERNAME"),
-            port: int.parse(const String.fromEnvironment("SERVER_PORT")),
-          ),
-          const SizedBox(height: 8),
-          HostCard(
-            name: 'Work',
-            url: const String.fromEnvironment("SERVER_URL"),
-            username: const String.fromEnvironment("SERVER_USERNAME"),
-            port: int.parse(const String.fromEnvironment("SERVER_PORT")),
-          ),
-        ],
+        children: hosts.map((host) {
+          return HostCard(host: host);
+        }).toList(),
       ),
     );
   }
 
-  Widget _addHostButton() {
+  Widget _addHostButton(WidgetRef ref) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () async {
+        final newHost =
+            Host(name: 'home', url: 'rde.adamvinch.com', username: 'adam');
+        await ref.read(hostsListProvider.notifier).addHost(newHost);
+      },
       child: const Text('Add'),
     );
   }
