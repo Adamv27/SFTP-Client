@@ -19,9 +19,12 @@ class AppTheme {
   );
 
   static const ColorScheme _dark = ColorScheme.dark(
-    primary: Color(0xFF845BF5),
+    primary: Color(0xFF9965F4),
+    secondary: Color(0xFFAAF255),
     primaryContainer: Color(0xFF202529),
     secondaryContainer: Color(0xFF292E32),
+    onPrimaryContainer: Color(0xFFDDDDDD),
+    onSecondaryContainer: Color(0xFF6A6A6A),
   );
 
   static ThemeData get light => ThemeData.from(colorScheme: _light);
