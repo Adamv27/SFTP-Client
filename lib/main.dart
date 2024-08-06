@@ -1,20 +1,19 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:sftp_client/app.dart';
 
 void main() {
-  runApp(const MainApp());
-}
+  appWindow.size = const Size(800, 600);
+  runApp(const App());
+  appWindow.show();
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+  doWhenWindowReady(() {
+    final win = appWindow;
+    const initialSize = Size(800, 600);
+    win.minSize = initialSize;
+    win.size = initialSize;
+    win.alignment = Alignment.center;
+    win.title = "SFTP Client";
+    win.show();
+  });
 }
