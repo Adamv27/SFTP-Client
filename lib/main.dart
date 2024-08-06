@@ -14,6 +14,7 @@ void main() {
     win.size = initialSize;
     win.alignment = Alignment.center;
     win.title = "SFTP Client";
+
     win.show();
   });
 }
