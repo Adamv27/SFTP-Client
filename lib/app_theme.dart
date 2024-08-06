@@ -2,8 +2,6 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const double windowBarHeight = 85.0;
-
   static final buttonColors = WindowButtonColors(
     iconNormal: Colors.white,
     mouseOver: const Color(0xFF845BF5),

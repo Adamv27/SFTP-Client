@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sftp_client/app_theme.dart';
 import 'package:sftp_client/pages/app_page.dart';
 import 'package:sftp_client/pages/home/home.dart';
+import 'package:sftp_client/pages/upload/upload.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -15,7 +16,7 @@ class App extends StatelessWidget {
       darkTheme: AppTheme.dark,
       home: const Scaffold(
         body: AppPage(
-          pageContent: HomePage(),
+          pageContent: UploadPage(),
         ),
       ),
     );
