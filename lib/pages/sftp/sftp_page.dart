@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 
-class UploadPage extends StatelessWidget {
-  const UploadPage({super.key});
+class SFTPPage extends StatelessWidget {
+  const SFTPPage({super.key});
 
   Future<void> connectToServer() async {
     const url = String.fromEnvironment("SERVER_URL");
@@ -35,7 +35,7 @@ class UploadPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Upload'),
+        const Text('SFTP'),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () async {

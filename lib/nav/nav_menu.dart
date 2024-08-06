@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sftp_client/pages/home/home.dart';
-import 'package:sftp_client/pages/profiles/profiles.dart';
-import 'package:sftp_client/pages/settings/settings.dart';
-import 'package:sftp_client/pages/upload/upload.dart';
+import 'package:sftp_client/nav/page_link.dart';
 import 'package:sftp_client/window_bar/window_title.dart';
 
-class NavMenu extends StatelessWidget {
+class NavMenu extends StatefulWidget {
   const NavMenu({
     super.key,
     required this.onNav,
@@ -14,12 +11,19 @@ class NavMenu extends StatelessWidget {
   final Function(Widget newPage) onNav;
 
   @override
+  State<NavMenu> createState() => _NavMenuState();
+}
+
+class _NavMenuState extends State<NavMenu> {
+  PageLink selectedLink = PageLink.hosts;
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       color: colorScheme.secondaryContainer,
-      width: 150,
+      width: 155,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -32,34 +36,29 @@ class NavMenu extends StatelessWidget {
 
   Widget _buildNavLinks(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextButton.icon(
-            onPressed: () => onNav(const HomePage()),
-            icon: const Icon(Icons.home),
-            label: const Text('Home'),
-          ),
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: () => onNav(const UploadPage()),
-            icon: const Icon(Icons.upload),
-            label: const Text('Upload'),
-          ),
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: () => onNav(const ProfilesPage()),
-            icon: const Icon(Icons.person),
-            label: const Text('Profiles'),
-          ),
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: () => onNav(const SettingsPage()),
-            icon: const Icon(Icons.settings),
-            label: const Text('Settings'),
-          ),
-        ],
+        children: PageLink.values.map((link) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: TextButton.icon(
+              onPressed: () {
+                widget.onNav(link.content);
+                setState(() {
+                  selectedLink = link;
+                });
+              },
+              icon: link.icon,
+              label: Row(
+                children: [
+                  Text(link.label),
+                  if (selectedLink == link) const Icon(Icons.arrow_right)
+                ],
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
