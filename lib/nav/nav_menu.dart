@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sftp_client/nav/nav_link.dart';
 import 'package:sftp_client/nav/page_link.dart';
 import 'package:sftp_client/window_bar/window_title.dart';
 
@@ -35,28 +36,23 @@ class _NavMenuState extends State<NavMenu> {
   }
 
   Widget _buildNavLinks(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: PageLink.values.map((link) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: TextButton.icon(
-              onPressed: () {
-                widget.onNav(link.content);
-                setState(() {
-                  selectedLink = link;
-                });
-              },
-              icon: link.icon,
-              label: Row(
-                children: [
-                  Text(link.label),
-                  if (selectedLink == link) const Icon(Icons.arrow_right)
-                ],
-              ),
-            ),
+          bool isSelected = selectedLink == link;
+          return NavLink(
+            link: link,
+            onClick: () {
+              widget.onNav(link.content);
+              setState(() {
+                selectedLink = link;
+              });
+            },
+            isSelected: isSelected,
           );
         }).toList(),
       ),
