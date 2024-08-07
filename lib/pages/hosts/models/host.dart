@@ -1,15 +1,30 @@
+enum HostAuthType {
+  password,
+  key,
+  none,
+}
+
 class Host {
-  const Host({
+  Host({
     required this.name,
     required this.url,
-    this.username,
     this.port = 22,
+    this.username,
+    this.authType = HostAuthType.none,
+    this.password,
+    this.savePassword = true,
+    this.keyPath,
   });
 
-  final String name;
-  final String? username;
-  final int port;
-  final String url;
+  String name;
+  int port;
+  String url;
+
+  String? username;
+  HostAuthType authType;
+  String? password;
+  bool savePassword;
+  String? keyPath;
 
   factory Host.fromJson(Map<String, dynamic> json) {
     return Host(
@@ -18,6 +33,18 @@ class Host {
       url: json['url'],
       port: json['port'],
     );
+  }
+
+  set hostName(String? newName) {
+    if (newName == null || newName.isEmpty) return;
+    name = newName;
+  }
+
+  set hostPort(int? newPort) {
+    if (newPort == null || newPort < 1 || newPort > 65534) {
+      return;
+    }
+    port = newPort;
   }
 
   Map<String, dynamic> toJson() {

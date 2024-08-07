@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DialogMenu extends StatelessWidget {
+  static double maxWidth = 500;
+
   const DialogMenu({
     super.key,
     required this.menuContent,
@@ -14,8 +16,11 @@ class DialogMenu extends StatelessWidget {
 
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-            minWidth: 400, maxWidth: 500, minHeight: 500, maxHeight: 700),
+        constraints: BoxConstraints(
+            minWidth: 400,
+            maxWidth: DialogMenu.maxWidth,
+            minHeight: 500,
+            maxHeight: 700),
         decoration: BoxDecoration(
           color: colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(8),

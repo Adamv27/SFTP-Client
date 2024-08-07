@@ -8,10 +8,6 @@
             "name": "sftp_client",
             "request": "launch",
             "type": "dart",
-            "args": [
-                "--dart-define-from-file",
-                "./dev.json"
-            ]
         },
         {
             "name": "sftp_client (profile mode)",
