@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum HostAuthType {
   password,
   key,
@@ -45,6 +47,17 @@ class Host {
       return;
     }
     port = newPort;
+  }
+
+  Icon get authTypeIcon {
+    switch (authType) {
+      case HostAuthType.none:
+        return const Icon(Icons.lock_open);
+      case HostAuthType.key:
+        return const Icon(Icons.key);
+      case HostAuthType.password:
+        return const Icon(Icons.password);
+    }
   }
 
   Map<String, dynamic> toJson() {

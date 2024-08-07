@@ -31,17 +31,18 @@ class HostCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
-            child: Text(
-              host.name[0].toUpperCase(),
-              style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: host.authTypeIcon,
           ),
         ),
         onTap: () {
-          print('Connecting to ${host.username}@${host.url}');
+          switch (host.authType) {
+            case HostAuthType.none:
+              print('Logging in');
+            case HostAuthType.password:
+              print('Need password');
+            case HostAuthType.key:
+              print('Got ur key');
+          }
         },
         title: Text(
           host.name,
