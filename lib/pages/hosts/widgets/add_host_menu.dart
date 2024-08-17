@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sftp_client/pages/hosts/models/host.dart';
@@ -12,7 +13,7 @@ class AddHostMenu extends StatefulWidget {
 
 class _AddHostMenuState extends State<AddHostMenu> {
   Host host = Host(name: '', url: '');
-
+  TextEditingController keyPathController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -94,48 +95,88 @@ class _AddHostMenuState extends State<AddHostMenu> {
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
-      child: SizedBox(
-        width: fieldWidth,
-        child: Column(
-          children: [
-            const TabBar(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: fieldWidth,
+            child: const TabBar(
               tabs: [
                 Tab(text: 'Password'),
                 Tab(text: 'Key'),
               ],
             ),
-            SizedBox(
-              width: fieldWidth,
-              height: 50,
-              child: TabBarView(
-                children: [
-                  _buildPasswordTabView(),
-                  _buildKeyTabView(),
-                ],
-              ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            width: DialogMenu.maxWidth * 0.75,
+            height: 125,
+            child: TabBarView(
+              children: [
+                _buildPasswordTabView(),
+                _buildKeyTabView(),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildPasswordTabView() {
-    return Column(
-      children: [
-        TextField(
-          onChanged: (value) => host.password = value,
-          decoration: const InputDecoration(
-            hintText: 'Password',
-            border: OutlineInputBorder(),
-          ),
+    return Column(children: [
+      TextField(
+        obscureText: true,
+        onChanged: (value) => host.password = value,
+        decoration: const InputDecoration(
+          hintText: 'Password',
+          border: OutlineInputBorder(),
         ),
-      ],
-    );
+      ),
+      Row(children: [
+        Checkbox(
+          value: host.savePassword,
+          onChanged: (value) {
+            if (value != null) {
+              setState(() => host.savePassword = value);
+            }
+          },
+        ),
+        const Text('Save password')
+      ])
+    ]);
   }
 
   Widget _buildKeyTabView() {
-    return Container();
+    return Column(children: [
+      Row(children: [
+        SizedBox(
+          width: 200,
+          child: TextField(
+            controller: keyPathController,
+            onChanged: (value) => host.keyPath = value,
+            decoration: const InputDecoration(
+              hintText: 'SSH key path',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton(
+          onPressed: () async {
+            FilePickerResult? result = await FilePicker.platform.pickFiles();
+            if (result != null) {
+              final String? path = result.files.single.path;
+              host.keyPath = path;
+              setState(
+                () => keyPathController = TextEditingController(text: path),
+              );
+            }
+          },
+          child: const Text('Open'),
+        )
+      ])
+    ]);
   }
 
   Widget _buildControlButtons(BuildContext context) {
