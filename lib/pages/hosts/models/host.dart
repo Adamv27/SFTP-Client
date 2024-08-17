@@ -8,18 +8,19 @@ enum HostAuthType {
 
 class Host {
   Host({
-    required this.name,
+    required String name,
     required this.url,
-    this.port = 22,
+    int port = 22,
     this.username,
     this.authType = HostAuthType.none,
     this.password,
     this.savePassword = true,
     this.keyPath,
-  });
+  })  : _name = name,
+        _port = port;
 
-  String name;
-  int port;
+  String _name;
+  int _port;
   String url;
 
   String? username;
@@ -28,26 +29,20 @@ class Host {
   bool savePassword;
   String? keyPath;
 
-  factory Host.fromJson(Map<String, dynamic> json) {
-    return Host(
-      name: json['name'],
-      username: json['username'],
-      url: json['url'],
-      port: json['port'],
-    );
-  }
-
-  set hostName(String? newName) {
+  set name(String? newName) {
     if (newName == null || newName.isEmpty) return;
-    name = newName;
+    _name = newName;
   }
 
-  set hostPort(int? newPort) {
-    if (newPort == null || newPort < 1 || newPort > 65534) {
+  set port(int? newPort) {
+    if (newPort == null || newPort < 1 || newPort > 65535) {
       return;
     }
-    port = newPort;
+    _port = newPort;
   }
+
+  int get port => _port;
+  String get name => _name;
 
   Icon get authTypeIcon {
     switch (authType) {
@@ -62,22 +57,31 @@ class Host {
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
+      'name': _name,
       'username': username,
-      'port': port,
+      'port': _port,
       'url': url,
     };
+  }
+
+  factory Host.fromJson(Map<String, dynamic> json) {
+    return Host(
+      name: json['name'],
+      username: json['username'],
+      url: json['url'],
+      port: json['port'],
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return other is Host &&
-        other.name == name &&
+        other.name == _name &&
         other.username == username &&
-        other.port == port &&
+        other.port == _port &&
         other.url == url;
   }
 
   @override
-  int get hashCode => name.hashCode + username.hashCode + port + url.hashCode;
+  int get hashCode => _name.hashCode + username.hashCode + port + url.hashCode;
 }

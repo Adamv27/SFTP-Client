@@ -44,7 +44,7 @@ class _AddHostMenuState extends State<AddHostMenu> {
         SizedBox(
           width: fieldWidth,
           child: TextField(
-            onChanged: (value) => setState(() => host.hostName = value),
+            onChanged: (value) => host.name = value,
             decoration: const InputDecoration(
                 hintText: 'Name', border: OutlineInputBorder()),
           ),
@@ -53,7 +53,7 @@ class _AddHostMenuState extends State<AddHostMenu> {
         SizedBox(
           width: fieldWidth * 1.5,
           child: TextField(
-            onChanged: (value) => setState(() => host.url = value),
+            onChanged: (value) => host.url = value,
             decoration: const InputDecoration(
                 hintText: 'URL', border: OutlineInputBorder()),
           ),
@@ -64,13 +64,13 @@ class _AddHostMenuState extends State<AddHostMenu> {
         SizedBox(
           width: fieldWidth,
           child: TextField(
-            onChanged: (value) => setState(() => host.username = value),
+            onChanged: (value) => host.username = value,
             decoration: const InputDecoration(
                 hintText: 'Username', border: OutlineInputBorder()),
           ),
         ),
         const SizedBox(height: 12),
-        //SegmentedButton(segments: [], selected: )
+        _buildAuthFields(fieldWidth),
       ],
     );
   }
@@ -81,13 +81,61 @@ class _AddHostMenuState extends State<AddHostMenu> {
       child: TextFormField(
         initialValue: '22',
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        onChanged: (value) => host.hostPort = int.tryParse(value),
+        onChanged: (value) => host.port = int.tryParse(value),
         decoration: const InputDecoration(
           label: Text('Port'),
           border: OutlineInputBorder(),
         ),
       ),
     );
+  }
+
+  DefaultTabController _buildAuthFields(double fieldWidth) {
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: SizedBox(
+        width: fieldWidth,
+        child: Column(
+          children: [
+            const TabBar(
+              tabs: [
+                Tab(text: 'Password'),
+                Tab(text: 'Key'),
+              ],
+            ),
+            SizedBox(
+              width: fieldWidth,
+              height: 50,
+              child: TabBarView(
+                children: [
+                  _buildPasswordTabView(),
+                  _buildKeyTabView(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordTabView() {
+    return Column(
+      children: [
+        TextField(
+          onChanged: (value) => host.password = value,
+          decoration: const InputDecoration(
+            hintText: 'Password',
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKeyTabView() {
+    return Container();
   }
 
   Widget _buildControlButtons(BuildContext context) {
