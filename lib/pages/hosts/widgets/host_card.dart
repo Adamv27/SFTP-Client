@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sftp_client/pages/hosts/models/host.dart';
+import 'package:sftp_client/pages/hosts/models/host_auth_type.dart';
 import 'package:sftp_client/pages/hosts/providers/hosts_provider.dart';
 
 class HostCard extends ConsumerWidget {
@@ -31,7 +32,7 @@ class HostCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
-            child: host.authTypeIcon,
+            child: host.authType.icon,
           ),
         ),
         onTap: () {

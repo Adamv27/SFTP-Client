@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-
-enum HostAuthType {
-  password,
-  key,
-  none,
-}
+import 'package:sftp_client/pages/hosts/models/host_auth_type.dart';
 
 class Host {
   Host({
@@ -13,11 +7,13 @@ class Host {
     int port = 22,
     this.username,
     this.authType = HostAuthType.none,
-    this.password,
+    String? password,
     this.savePassword = true,
-    this.keyPath,
+    String? keyPath,
   })  : _name = name,
-        _port = port;
+        _port = port,
+        _password = password,
+        _keyPath = keyPath;
 
   String _name;
   int _port;
@@ -25,9 +21,9 @@ class Host {
 
   String? username;
   HostAuthType authType;
-  String? password;
+  String? _password;
   bool savePassword;
-  String? keyPath;
+  String? _keyPath;
 
   set name(String? newName) {
     if (newName == null || newName.isEmpty) return;
@@ -35,25 +31,32 @@ class Host {
   }
 
   set port(int? newPort) {
-    if (newPort == null || newPort < 1 || newPort > 65535) {
-      return;
-    }
+    if (newPort == null || newPort < 1 || newPort > 65535) return;
     _port = newPort;
+  }
+
+  set password(String? newPassword) {
+    if (newPassword == null || newPassword.isEmpty) {
+      authType = HostAuthType.none;
+    } else {
+      authType = HostAuthType.password;
+    }
+    _password = newPassword;
+  }
+
+  set keyPath(String? newKeyPath) {
+    if (newKeyPath == null || newKeyPath.isEmpty) {
+      authType = HostAuthType.none;
+    } else {
+      authType = HostAuthType.key;
+    }
+    _keyPath = newKeyPath;
   }
 
   int get port => _port;
   String get name => _name;
-
-  Icon get authTypeIcon {
-    switch (authType) {
-      case HostAuthType.none:
-        return const Icon(Icons.lock_open);
-      case HostAuthType.key:
-        return const Icon(Icons.key);
-      case HostAuthType.password:
-        return const Icon(Icons.password);
-    }
-  }
+  String? get password => _password;
+  String? get keyPath => _keyPath;
 
   Map<String, dynamic> toJson() {
     return {
