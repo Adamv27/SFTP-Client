@@ -16,7 +16,6 @@ class _AddHostMenuState extends State<AddHostMenu> {
   TextEditingController keyPathController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return DialogMenu(
       menuContent: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

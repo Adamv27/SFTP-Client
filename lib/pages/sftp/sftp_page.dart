@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:dartssh2/dartssh2.dart';
+import 'package:dartssh3/dartssh3.dart';
 import 'package:flutter/material.dart';
 
 class SFTPPage extends StatelessWidget {
