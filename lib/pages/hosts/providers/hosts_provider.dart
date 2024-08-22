@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sftp_client/pages/hosts/models/host.dart';
+import 'package:sftp_client/pages/sftp/providers/selected_host_provider.dart';
 import 'package:sftp_client/storage_provider.dart';
 
 part 'hosts_provider.g.dart';
@@ -30,6 +31,11 @@ class HostsList extends _$HostsList {
 
   Future<void> removeHost(Host hostToRemove) async {
     final storage = ref.read(secureStorageProvider);
+    final selectedHost = ref.read(selectedHostProvider);
+    if (hostToRemove == selectedHost) {
+      ref.read(selectedHostProvider.notifier).clearSelection();
+    }
+
     final hosts = await build();
     final updatedHosts = hosts.where((host) => host != hostToRemove);
     final hostsJson = updatedHosts.map((host) => host.toJson()).toList();

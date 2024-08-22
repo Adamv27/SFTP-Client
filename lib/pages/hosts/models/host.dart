@@ -64,6 +64,9 @@ class Host {
       'username': username,
       'port': _port,
       'url': url,
+      'password': savePassword ? _password : null,
+      'keyPath': _keyPath,
+      'authType': authType.name,
     };
   }
 
@@ -73,6 +76,9 @@ class Host {
       username: json['username'],
       url: json['url'],
       port: json['port'],
+      password: json['password'],
+      keyPath: json['keyPath'],
+      authType: HostAuthType.values.byName(json['authType']),
     );
   }
 
