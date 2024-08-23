@@ -13,14 +13,30 @@ class SFTPFileExplorer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sftpConnection = ref.watch(currentSFTPConnectionProvider);
     return sftpConnection.when(
-      data: (sftp) => _buildFileExplorer(sftp),
+      data: (sftp) => _buildFileExplorer(ref, sftp),
       error: (error, stacktrace) => Container(),
       loading: () => const CircularProgressIndicator(),
     );
   }
 
-  Widget _buildFileExplorer(SFTPConnection? sftp) {
+  Widget _buildFileExplorer(WidgetRef ref, SFTPConnection? sftp) {
     if (sftp == null) return Container();
-    return Text('Connected to SFTP');
+
+    final results = ref.watch(listDirProvider('/home/'));
+
+    return results.when(
+      data: (files) => SizedBox(
+        height: 300,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ...files.map((file) => Text(file.filename)),
+            ],
+          ),
+        ),
+      ),
+      error: (error, stackTrace) => Container(),
+      loading: () => CircularProgressIndicator(),
+    );
   }
 }
