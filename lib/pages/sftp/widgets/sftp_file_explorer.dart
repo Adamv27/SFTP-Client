@@ -13,30 +13,51 @@ class SFTPFileExplorer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sftpConnection = ref.watch(currentSFTPConnectionProvider);
     return sftpConnection.when(
-      data: (sftp) => _buildFileExplorer(ref, sftp),
+      data: (sftp) => _buildFileExplorer(context, ref, sftp),
       error: (error, stacktrace) => Container(),
       loading: () => const CircularProgressIndicator(),
     );
   }
 
-  Widget _buildFileExplorer(WidgetRef ref, SFTPConnection? sftp) {
+  Widget _buildFileExplorer(
+      BuildContext context, WidgetRef ref, SFTPConnection? sftp) {
     if (sftp == null) return Container();
 
     final results = ref.watch(listDirProvider('/home/'));
 
     return results.when(
       data: (files) => SizedBox(
+        width: MediaQuery.of(context).size.width / 2 - 150,
         height: 300,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ...files.map((file) => Text(file.filename)),
-            ],
-          ),
+        child: GridView.count(
+          crossAxisCount: 4,
+          children: files.map((file) {
+            if (file.attr.isDirectory) return _buildDirectory(file);
+
+            return _buildFile(file);
+          }).toList(),
         ),
       ),
       error: (error, stackTrace) => Container(),
-      loading: () => CircularProgressIndicator(),
+      loading: () => const CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildDirectory(SftpName file) {
+    return Column(
+      children: [
+        const Icon(Icons.folder),
+        Text(file.filename),
+      ],
+    );
+  }
+
+  Widget _buildFile(SftpName file) {
+    return Column(
+      children: [
+        const Icon(Icons.description),
+        Text(file.filename),
+      ],
     );
   }
 }
