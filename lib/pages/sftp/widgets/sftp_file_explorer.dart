@@ -23,7 +23,7 @@ class SFTPFileExplorer extends ConsumerWidget {
       BuildContext context, WidgetRef ref, SFTPConnection? sftp) {
     if (sftp == null) return Container();
 
-    final results = ref.watch(listDirProvider('/home/'));
+    final results = ref.watch(listDirProvider('/home/adam'));
 
     return results.when(
       data: (files) => SizedBox(
@@ -46,7 +46,10 @@ class SFTPFileExplorer extends ConsumerWidget {
   Widget _buildDirectory(SftpName file) {
     return Column(
       children: [
-        const Icon(Icons.folder),
+        const Icon(
+          Icons.folder,
+          color: Colors.lightBlue,
+        ),
         Text(file.filename),
       ],
     );
