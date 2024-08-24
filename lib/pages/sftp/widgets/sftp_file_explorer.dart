@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sftp_client/pages/sftp/models/sftp_connection.dart';
 import 'package:sftp_client/pages/sftp/providers/sftp_connection_provider.dart';
+import 'package:sftp_client/pages/sftp/widgets/directory_widget.dart';
+import 'package:sftp_client/pages/sftp/widgets/file_widget.dart';
+import 'package:sftp_client/theme/app_theme.dart';
 
 class SFTPFileExplorer extends ConsumerWidget {
   const SFTPFileExplorer({super.key});
@@ -26,41 +29,25 @@ class SFTPFileExplorer extends ConsumerWidget {
     final results = ref.watch(listDirProvider('/home/adam'));
 
     return results.when(
-      data: (files) => SizedBox(
-        width: MediaQuery.of(context).size.width / 2 - 150,
-        height: 300,
-        child: GridView.count(
-          crossAxisCount: 4,
-          children: files.map((file) {
-            if (file.attr.isDirectory) return _buildDirectory(file);
-
-            return _buildFile(file);
-          }).toList(),
-        ),
+      data: (files) => LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            margin: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            width: constraints.maxWidth / 2,
+            height: MediaQuery.of(context).size.height - 160,
+            child: GridView.count(
+              crossAxisCount: 4,
+              children: files.map((file) {
+                return FileWidget(file: file);
+              }).toList(),
+            ),
+          );
+        },
       ),
       error: (error, stackTrace) => Container(),
       loading: () => const CircularProgressIndicator(),
-    );
-  }
-
-  Widget _buildDirectory(SftpName file) {
-    return Column(
-      children: [
-        const Icon(
-          Icons.folder,
-          color: Colors.lightBlue,
-        ),
-        Text(file.filename),
-      ],
-    );
-  }
-
-  Widget _buildFile(SftpName file) {
-    return Column(
-      children: [
-        const Icon(Icons.description),
-        Text(file.filename),
-      ],
     );
   }
 }
