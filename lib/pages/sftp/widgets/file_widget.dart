@@ -44,7 +44,7 @@ class _FileWidgetState extends State<FileWidget> {
             Icon(
               widget.isDirectory ? Icons.folder : Icons.description,
               color: widget.isDirectory ? Colors.blue : Colors.white,
-              size: 40,
+              size: 60,
             ),
             Text(
               widget.file.filename,

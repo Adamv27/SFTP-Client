@@ -3,7 +3,7 @@ import 'package:sftp_client/pages/sftp/models/current_directory.dart';
 import 'package:sftp_client/pages/sftp/models/ssh_connection.dart';
 
 class SFTPConnection {
-  final _currentDirectory = CurrentDirectory(fullPath: '/home');
+  final _currentDirectory = CurrentDirectory(fullPath: '/home/');
   late SftpClient _sftpClient;
 
   Future<void> connect(SSHConnection sshConnection) async {
@@ -31,4 +31,5 @@ class SFTPConnection {
   }
 
   SftpClient get client => _sftpClient;
+  String get workingDirectory => _currentDirectory.fullPath;
 }

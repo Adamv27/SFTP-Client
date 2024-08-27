@@ -29,32 +29,89 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
           return const CircularProgressIndicator();
         }
         final files = snapshot.data!;
+
+        final explorerHeight = MediaQuery.of(context).size.height - 160;
+        const toolBarHeight = 50.0;
+
         return LayoutBuilder(builder: (context, constraints) {
           return Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(4)),
             margin: const EdgeInsets.all(8),
             padding: const EdgeInsets.all(8),
-            color: Theme.of(context).colorScheme.secondaryContainer,
             width: constraints.maxWidth / 2,
-            height: MediaQuery.of(context).size.height - 160,
-            child: GridView.count(
-              crossAxisCount: 4,
-              children: files.map((file) {
-                final isDirectory = file.attr.isDirectory;
+            height: explorerHeight,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: toolBarHeight,
+                  child: _buildToolBar(context),
+                ),
+                SizedBox(
+                  height: explorerHeight - toolBarHeight - 16,
+                  child: GridView.count(
+                    crossAxisCount: 5,
+                    children: files.map((file) {
+                      final isDirectory = file.attr.isDirectory;
 
-                return FileWidget(
-                  file: file,
-                  isDirectory: isDirectory,
-                  onDoubleTap: () {
-                    if (isDirectory) {
-                      enterDirectory(file.filename);
-                    }
-                  },
-                );
-              }).toList(),
+                      return FileWidget(
+                        file: file,
+                        isDirectory: isDirectory,
+                        onDoubleTap: () {
+                          if (isDirectory) {
+                            enterDirectory(file.filename);
+                          }
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
           );
         });
       },
+    );
+  }
+
+  Widget _buildToolBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 35,
+          height: 35,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor:
+                  WidgetStatePropertyAll(colorScheme.onSecondaryContainer),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(0.0)),
+            ),
+            onPressed: () {
+              enterDirectory('..');
+            },
+            child: const Icon(
+              Icons.arrow_back,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          width: 200,
+          padding: const EdgeInsets.all(7),
+          decoration: BoxDecoration(
+            color: colorScheme.onSecondaryContainer,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            widget.sftp.workingDirectory,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

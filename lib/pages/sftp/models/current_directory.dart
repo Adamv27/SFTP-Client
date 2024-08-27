@@ -17,7 +17,7 @@ class CurrentDirectory {
       moveBackDirectory();
       return;
     }
-    _fullPath = '$_fullPath/$directoryName/';
+    _fullPath = '$_fullPath$directoryName/';
   }
 
   String get fullPath => _fullPath;

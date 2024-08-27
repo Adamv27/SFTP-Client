@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('Enter Dir', () {
-    final currentDirectory = CurrentDirectory(fullPath: '/home/user');
+    final currentDirectory = CurrentDirectory(fullPath: '/home/user/');
 
     currentDirectory.enterDirectory('files');
     expect(currentDirectory.fullPath, '/home/user/files/');
