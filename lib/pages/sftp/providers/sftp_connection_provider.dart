@@ -1,4 +1,3 @@
-import 'package:dartssh3/dartssh3.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sftp_client/pages/sftp/models/sftp_connection.dart';
 import 'package:sftp_client/pages/sftp/providers/ssh_connection_provider.dart';
@@ -15,11 +14,4 @@ class CurrentSFTPConnection extends _$CurrentSFTPConnection {
     await sftp.connect(sshConnection);
     return sftp;
   }
-}
-
-@riverpod
-Future<List<SftpName>> listDir(ListDirRef ref, String path) async {
-  final sftp = await ref.watch(currentSFTPConnectionProvider.future);
-  if (sftp == null) return List.empty();
-  return await sftp.client.listdir(path);
 }

@@ -1,14 +1,16 @@
 import 'package:dartssh3/dartssh3.dart';
 import 'package:flutter/material.dart';
-import 'package:sftp_client/pages/sftp/widgets/directory_widget.dart';
 
 class FileWidget extends StatefulWidget {
-  const FileWidget({
-    super.key,
-    required this.file,
-  });
+  const FileWidget(
+      {super.key,
+      required this.file,
+      required this.isDirectory,
+      this.onDoubleTap});
 
   final SftpName file;
+  final bool isDirectory;
+  final VoidCallback? onDoubleTap;
 
   @override
   State<FileWidget> createState() => _FileWidgetState();
@@ -16,6 +18,7 @@ class FileWidget extends StatefulWidget {
 
 class _FileWidgetState extends State<FileWidget> {
   bool isHovering = false;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -29,22 +32,26 @@ class _FileWidgetState extends State<FileWidget> {
       ),
       child: InkWell(
         onTap: () {},
+        onDoubleTap: () {
+          if (widget.onDoubleTap != null) {
+            widget.onDoubleTap!();
+          }
+        },
         onHover: (value) => setState(() => isHovering = value),
-        child: widget.file.attr.isDirectory
-            ? DirectoryWidget(directory: widget.file)
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.description,
-                    size: 40,
-                  ),
-                  Text(
-                    widget.file.filename,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              widget.isDirectory ? Icons.folder : Icons.description,
+              color: widget.isDirectory ? Colors.blue : Colors.white,
+              size: 40,
+            ),
+            Text(
+              widget.file.filename,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

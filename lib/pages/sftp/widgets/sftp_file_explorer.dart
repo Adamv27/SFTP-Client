@@ -1,36 +1,35 @@
-import 'dart:async';
-
-import 'package:dartssh3/dartssh3.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sftp_client/pages/sftp/models/sftp_connection.dart';
-import 'package:sftp_client/pages/sftp/providers/sftp_connection_provider.dart';
-import 'package:sftp_client/pages/sftp/widgets/directory_widget.dart';
 import 'package:sftp_client/pages/sftp/widgets/file_widget.dart';
-import 'package:sftp_client/theme/app_theme.dart';
 
-class SFTPFileExplorer extends ConsumerWidget {
-  const SFTPFileExplorer({super.key});
+class SFTPFileExplorer extends StatefulWidget {
+  const SFTPFileExplorer({
+    super.key,
+    required this.sftp,
+  });
+
+  final SFTPConnection sftp;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sftpConnection = ref.watch(currentSFTPConnectionProvider);
-    return sftpConnection.when(
-      data: (sftp) => _buildFileExplorer(context, ref, sftp),
-      error: (error, stacktrace) => Container(),
-      loading: () => const CircularProgressIndicator(),
-    );
+  State<SFTPFileExplorer> createState() => _SFTPFileExplorerState();
+}
+
+class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
+  void enterDirectory(String directoryName) {
+    widget.sftp.enterDirectory(directoryName);
+    setState(() {});
   }
 
-  Widget _buildFileExplorer(
-      BuildContext context, WidgetRef ref, SFTPConnection? sftp) {
-    if (sftp == null) return Container();
-
-    final results = ref.watch(listDirProvider('/home/adam'));
-
-    return results.when(
-      data: (files) => LayoutBuilder(
-        builder: (context, constraints) {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: widget.sftp.listDir(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const CircularProgressIndicator();
+        }
+        final files = snapshot.data!;
+        return LayoutBuilder(builder: (context, constraints) {
           return Container(
             margin: const EdgeInsets.all(8),
             padding: const EdgeInsets.all(8),
@@ -40,14 +39,22 @@ class SFTPFileExplorer extends ConsumerWidget {
             child: GridView.count(
               crossAxisCount: 4,
               children: files.map((file) {
-                return FileWidget(file: file);
+                final isDirectory = file.attr.isDirectory;
+
+                return FileWidget(
+                  file: file,
+                  isDirectory: isDirectory,
+                  onDoubleTap: () {
+                    if (isDirectory) {
+                      enterDirectory(file.filename);
+                    }
+                  },
+                );
               }).toList(),
             ),
           );
-        },
-      ),
-      error: (error, stackTrace) => Container(),
-      loading: () => const CircularProgressIndicator(),
+        });
+      },
     );
   }
 }
