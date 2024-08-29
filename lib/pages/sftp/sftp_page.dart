@@ -21,7 +21,7 @@ class SFTPPage extends ConsumerWidget {
           const Text('SFTP'),
           const SizedBox(height: 10),
           const HostDropdown(),
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height - 160,
             child: Row(
               children: [
@@ -29,7 +29,7 @@ class SFTPPage extends ConsumerWidget {
                 sftpConnection.when(
                   data: (sftp) {
                     if (sftp == null) {
-                      return Container();
+                      return _connectToHostMessage(context, explorerWidth);
                     }
                     return SFTPFileExplorer(sftp: sftp, width: explorerWidth);
                   },
@@ -53,7 +53,7 @@ class SFTPPage extends ConsumerWidget {
               width: 3,
               color: Theme.of(context).colorScheme.secondaryContainer)),
       width: width,
-      child: Center(
+      child: const Center(
         child: Text('Connect to Host'),
       ),
     );
