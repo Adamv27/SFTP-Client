@@ -14,10 +14,13 @@ class CurrentDirectory {
   }
 
   void enterDirectory(String directoryName) {
-    if (directoryName == '..') {
+    if (directoryName == '.') {
+      return;
+    } else if (directoryName == '..') {
       moveBackDirectory();
       return;
     }
+    
     _fullPath = '$_fullPath$directoryName/';
   }
 

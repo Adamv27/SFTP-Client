@@ -18,16 +18,10 @@ class SFTPConnection {
 
   Future<List<SftpName>> listDir() async {
     print('Listing directory ${_currentDirectory.fullPath}');
-    List<SftpName> data = List.empty();
-    try {
-      data = await _sftpClient.listdir(_currentDirectory.fullPath);
-      print('FILES: ${data}');
-      data.sort((a, b) => a.filename.compareTo(b.filename));
-      return data;
-    } catch (e) {
-      print(e);
-    }
-    return data;
+    final List<SftpName> files =
+        await _sftpClient.listdir(_currentDirectory.fullPath);
+    files.sort((a, b) => a.filename.compareTo(b.filename));
+    return files;
   }
 
   void enterDirectory(String directoryName) {
