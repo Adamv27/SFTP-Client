@@ -26,21 +26,20 @@ class _AppPageState extends State<AppPage> {
       children: [
         NavMenu(onNav: setCurrentPage),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const WindowBar(),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  width: double.infinity,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const WindowBar(),
+                Expanded(
                   child: ProviderScope(
                     child: currentPage ?? widget.pageContent,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
