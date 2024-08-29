@@ -6,9 +6,11 @@ class SFTPFileExplorer extends StatefulWidget {
   const SFTPFileExplorer({
     super.key,
     required this.sftp,
+    required this.width,
   });
 
   final SFTPConnection sftp;
+  final double width;
 
   @override
   State<SFTPFileExplorer> createState() => _SFTPFileExplorerState();
@@ -29,48 +31,43 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
           return const CircularProgressIndicator();
         }
         final files = snapshot.data!;
-
-        final explorerHeight = MediaQuery.of(context).size.height - 160;
         const toolBarHeight = 50.0;
+        final filesPerRow = widget.width ~/ FileWidget.fileWidth;
 
-        return LayoutBuilder(builder: (context, constraints) {
-          return Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(4)),
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.all(8),
-            width: constraints.maxWidth / 2,
-            height: explorerHeight,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: toolBarHeight,
-                  child: _buildToolBar(context),
-                ),
-                SizedBox(
-                  height: explorerHeight - toolBarHeight - 16,
-                  child: GridView.count(
-                    crossAxisCount: 5,
-                    children: files.map((file) {
-                      final isDirectory = file.attr.isDirectory;
+        return Container(
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(4)),
+          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
+          width: widget.width,
+          child: Column(
+            children: [
+              SizedBox(
+                height: toolBarHeight,
+                child: _buildToolBar(context),
+              ),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: filesPerRow,
+                  children: files.map((file) {
+                    final isDirectory = file.attr.isDirectory;
 
-                      return FileWidget(
-                        file: file,
-                        isDirectory: isDirectory,
-                        onDoubleTap: () {
-                          if (isDirectory) {
-                            enterDirectory(file.filename);
-                          }
-                        },
-                      );
-                    }).toList(),
-                  ),
+                    return FileWidget(
+                      file: file,
+                      isDirectory: isDirectory,
+                      onDoubleTap: () {
+                        if (isDirectory) {
+                          enterDirectory(file.filename);
+                        }
+                      },
+                    );
+                  }).toList(),
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -109,6 +106,22 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
           child: Text(
             widget.sftp.workingDirectory,
             overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 35,
+          height: 35,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor:
+                  WidgetStatePropertyAll(colorScheme.onSecondaryContainer),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(0.0)),
+            ),
+            onPressed: () {},
+            child: const Icon(
+              Icons.grid_view,
+            ),
           ),
         ),
       ],
