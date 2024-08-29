@@ -116,6 +116,22 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 35,
+          height: 35,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor:
+                  WidgetStatePropertyAll(colorScheme.onSecondaryContainer),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(0.0)),
+            ),
+            onPressed: () {},
+            child: const Icon(
+              Icons.grid_view,
+            ),
+          ),
+        ),
       ],
     );
   }
