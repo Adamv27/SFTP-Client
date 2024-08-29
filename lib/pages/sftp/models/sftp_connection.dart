@@ -3,15 +3,11 @@ import 'package:sftp_client/pages/sftp/models/current_directory.dart';
 import 'package:sftp_client/pages/sftp/models/ssh_connection.dart';
 
 class SFTPConnection {
-  final _currentDirectory = CurrentDirectory(fullPath: '/home/');
+  final _currentDirectory = CurrentDirectory(fullPath: '/');
   late SftpClient _sftpClient;
 
   Future<void> connect(SSHConnection sshConnection) async {
     _sftpClient = await sshConnection.client.sftp();
-    final username = sshConnection.host.username;
-    if (username != null) {
-      _currentDirectory.enterDirectory(username);
-    }
     print('Connected to SFTP');
   }
 
@@ -21,9 +17,17 @@ class SFTPConnection {
   }
 
   Future<List<SftpName>> listDir() async {
-    final files = await _sftpClient.listdir(_currentDirectory.fullPath);
-    files.sort((a, b) => a.filename.compareTo(b.filename));
-    return files;
+    print('Listing directory ${_currentDirectory.fullPath}');
+    List<SftpName> data = List.empty();
+    try {
+      data = await _sftpClient.listdir(_currentDirectory.fullPath);
+      print('FILES: ${data}');
+      data.sort((a, b) => a.filename.compareTo(b.filename));
+      return data;
+    } catch (e) {
+      print(e);
+    }
+    return data;
   }
 
   void enterDirectory(String directoryName) {
