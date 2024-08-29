@@ -8,6 +8,8 @@ class FileWidget extends StatefulWidget {
       required this.isDirectory,
       this.onDoubleTap});
 
+  static int fileWidth = 100;
+
   final SftpName file;
   final bool isDirectory;
   final VoidCallback? onDoubleTap;
@@ -24,6 +26,8 @@ class _FileWidgetState extends State<FileWidget> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
+      width: 100,
+      height: 100,
       margin: const EdgeInsets.all(4),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(

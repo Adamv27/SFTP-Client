@@ -32,15 +32,20 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
 
         final explorerHeight = MediaQuery.of(context).size.height - 160;
         const toolBarHeight = 50.0;
+        const toolBarPadding = 16;
+        final gridHeight = explorerHeight - toolBarHeight - toolBarPadding;
 
         return LayoutBuilder(builder: (context, constraints) {
+          final explorerWidth = constraints.maxWidth / 2;
+          final filesPerRow = explorerWidth ~/ FileWidget.fileWidth;
+
           return Container(
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(4)),
             margin: const EdgeInsets.all(8),
             padding: const EdgeInsets.all(8),
-            width: constraints.maxWidth / 2,
+            width: explorerWidth,
             height: explorerHeight,
             child: Column(
               children: [
@@ -49,9 +54,9 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
                   child: _buildToolBar(context),
                 ),
                 SizedBox(
-                  height: explorerHeight - toolBarHeight - 16,
+                  height: gridHeight,
                   child: GridView.count(
-                    crossAxisCount: 5,
+                    crossAxisCount: filesPerRow,
                     children: files.map((file) {
                       final isDirectory = file.attr.isDirectory;
 
