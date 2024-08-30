@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sftp_client/pages/sftp/providers/sftp_connection_provider.dart';
+import 'package:sftp_client/pages/sftp/widgets/file_explorer/file_explorer.dart';
 import 'package:sftp_client/pages/sftp/widgets/host_dropdown.dart';
-import 'package:sftp_client/pages/sftp/widgets/local_file_explorer.dart';
-import 'package:sftp_client/pages/sftp/widgets/sftp_file_explorer.dart';
+import 'package:sftp_client/pages/sftp/widgets/file_explorer/local_file_explorer.dart';
+import 'package:sftp_client/pages/sftp/widgets/file_explorer/sftp_file_explorer.dart';
 
 class SFTPPage extends ConsumerWidget {
   const SFTPPage({super.key});
@@ -25,18 +26,25 @@ class SFTPPage extends ConsumerWidget {
             height: MediaQuery.of(context).size.height - 160,
             child: Row(
               children: [
-                LocalFileExplorer(width: explorerWidth),
-                sftpConnection.when(
-                  data: (sftp) {
-                    if (sftp == null) {
-                      return _connectToHostMessage(context, explorerWidth);
-                    }
-                    return SFTPFileExplorer(sftp: sftp, width: explorerWidth);
-                  },
-                  error: (error, stacktrace) =>
-                      const Text('Error connecting to SFTP'),
-                  loading: () => const CircularProgressIndicator(),
+                FileExplorer(
+                  width: explorerWidth,
+                  child: const LocalFileExplorer(),
                 ),
+                const Spacer(),
+                FileExplorer(
+                  width: explorerWidth,
+                  child: sftpConnection.when(
+                    data: (sftp) {
+                      if (sftp == null) {
+                        return _connectToHostMessage(context, explorerWidth);
+                      }
+                      return SFTPFileExplorer(sftp: sftp, width: explorerWidth);
+                    },
+                    error: (error, stacktrace) =>
+                        const Text('Error connecting to SFTP'),
+                    loading: () => const CircularProgressIndicator(),
+                  ),
+                )
               ],
             ),
           ),
