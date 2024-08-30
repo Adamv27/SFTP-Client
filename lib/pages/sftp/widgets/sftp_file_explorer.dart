@@ -24,51 +24,53 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: widget.sftp.listDir(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const CircularProgressIndicator();
-        }
-        final files = snapshot.data!;
-        const toolBarHeight = 50.0;
-        final filesPerRow = widget.width ~/ FileWidget.fileWidth;
+    final filesPerRow = widget.width ~/ FileWidget.fileWidth;
+    const toolBarHeight = 50.0;
 
-        return Container(
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(4)),
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.all(8),
-          width: widget.width,
-          child: Column(
-            children: [
-              SizedBox(
-                height: toolBarHeight,
-                child: _buildToolBar(context),
-              ),
-              Expanded(
+    return Container(
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(4)),
+      margin: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
+      width: widget.width,
+      child: Column(
+        children: [
+          SizedBox(
+            height: toolBarHeight,
+            child: _buildToolBar(context),
+          ),
+          FutureBuilder(
+            future: widget.sftp.listDir(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Container();
+              }
+              final files = snapshot.data!;
+              return Expanded(
                 child: GridView.count(
                   crossAxisCount: filesPerRow,
-                  children: files.map((file) {
-                    final isDirectory = file.attr.isDirectory;
+                  children: files.map(
+                    (file) {
+                      final isDirectory = file.attr.isDirectory;
 
-                    return FileWidget(
-                      file: file,
-                      isDirectory: isDirectory,
-                      onDoubleTap: () {
-                        if (isDirectory) {
-                          enterDirectory(file.filename);
-                        }
-                      },
-                    );
-                  }).toList(),
+                      return FileWidget(
+                        file: file,
+                        isDirectory: isDirectory,
+                        onDoubleTap: () {
+                          if (isDirectory) {
+                            enterDirectory(file.filename);
+                          }
+                        },
+                      );
+                    },
+                  ).toList(),
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
