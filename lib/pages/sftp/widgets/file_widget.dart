@@ -1,17 +1,17 @@
 import 'package:dartssh3/dartssh3.dart';
 import 'package:flutter/material.dart';
+import 'package:sftp_client/pages/sftp/models/file.dart';
 
 class FileWidget extends StatefulWidget {
-  const FileWidget(
-      {super.key,
-      required this.file,
-      required this.isDirectory,
-      this.onDoubleTap});
+  const FileWidget({
+    super.key,
+    required this.file,
+    this.onDoubleTap,
+  });
 
   static int fileWidth = 100;
 
-  final SftpName file;
-  final bool isDirectory;
+  final File file;
   final VoidCallback? onDoubleTap;
 
   @override
@@ -46,12 +46,12 @@ class _FileWidgetState extends State<FileWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              widget.isDirectory ? Icons.folder : Icons.description,
-              color: widget.isDirectory ? Colors.blue : Colors.white,
+              widget.file.isDirectory ? Icons.folder : Icons.description,
+              color: widget.file.isDirectory ? Colors.blue : Colors.white,
               size: 60,
             ),
             Text(
-              widget.file.filename,
+              widget.file.name,
               overflow: TextOverflow.ellipsis,
             ),
           ],

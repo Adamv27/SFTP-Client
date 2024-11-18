@@ -28,7 +28,9 @@ class SFTPPage extends ConsumerWidget {
               children: [
                 FileExplorer(
                   width: explorerWidth,
-                  child: const LocalFileExplorer(),
+                  child: LocalFileExplorer(
+                    width: explorerWidth,
+                  ),
                 ),
                 const Spacer(),
                 FileExplorer(

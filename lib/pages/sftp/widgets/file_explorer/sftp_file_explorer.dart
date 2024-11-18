@@ -1,5 +1,6 @@
 import 'package:dartssh3/dartssh3.dart';
 import 'package:flutter/material.dart';
+import 'package:sftp_client/pages/sftp/models/file.dart';
 import 'package:sftp_client/pages/sftp/models/sftp_connection.dart';
 import 'package:sftp_client/pages/sftp/widgets/file_explorer/tool_bar.dart';
 import 'package:sftp_client/pages/sftp/widgets/file_widget.dart';
@@ -60,8 +61,7 @@ class _SFTPFileExplorerState extends State<SFTPFileExplorer> {
           final isDirectory = file.attr.isDirectory;
 
           return FileWidget(
-            file: file,
-            isDirectory: isDirectory,
+            file: File.fromSftpName(file),
             onDoubleTap: () {
               if (isDirectory) {
                 enterDirectory(file.filename);
